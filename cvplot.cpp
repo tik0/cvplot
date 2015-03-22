@@ -1,4 +1,5 @@
 // Matlab style plot functions for OpenCV by Changbo (zoccob@gmail).
+// Redistributed and extendend by Timo Korthals (tkorthals@cit-ec.uni-bielefeld.de)
 
 #include "cvplot.h"
 
@@ -326,7 +327,7 @@ void Figure::DrawLabels(IplImage *output, int posx, int posy)
 }
 
 // whole process of draw a figure.
-void Figure::Show()
+IplImage *Figure::Show()
 {
 	Initialize();
 
@@ -339,9 +340,10 @@ void Figure::Show()
 
 	DrawLabels(output, figure_size.width - 100, 10);
 
-	cvShowImage(figure_name.c_str(), output);
-	cvWaitKey(1);
-	cvReleaseImage(&output);
+//	cvShowImage(figure_name.c_str(), output);
+//	cvWaitKey(1);
+//	cvReleaseImage(&output);
+	return output;
 
 }
 
@@ -367,11 +369,11 @@ Figure* PlotManager::FindFigure(string wnd)
 
 // plot a new curve, if a figure of the specified figure name already exists,
 // the curve will be plot on that figure; if not, a new figure will be created.
-void PlotManager::Plot(const string figure_name, const float *p, int count, int step,
+IplImage * PlotManager::Plot(const string figure_name, const float *p, int count, int step,
 					   int R, int G, int B)
 {
 	if (count < 1)
-		return;
+		return NULL;
 
 	if (step <= 0)
 		step = 1;
@@ -400,7 +402,7 @@ void PlotManager::Plot(const string figure_name, const float *p, int count, int 
 	}
 
 	active_series = active_figure->Add(s);
-	active_figure->Show();
+	return active_figure->Show();
 
 }
 
@@ -418,7 +420,7 @@ void PlotManager::Label(string lbl)
 // the curve will be plot on that figure; if not, a new figure will be created.
 // static method
 template<typename T>
-void plot(const string figure_name, const T* p, int count, int step,
+IplImage * plot(const string figure_name, const T* p, int count, int step,
 		  int R, int G, int B)
 {
 	if (step <= 0)
@@ -436,9 +438,11 @@ void plot(const string figure_name, const T* p, int count, int step,
 		src++;
 	}
 
-	pm.Plot(figure_name, data_copy, count, step, R, G, B);
+	IplImage *output = pm.Plot(figure_name, data_copy, count, step, R, G, B);
 
 	delete [] data_copy;
+
+	return output;
 }
 
 // delete all plots on a specified figure
@@ -460,15 +464,22 @@ void label(string lbl)
 
 
 template
-void plot(const string figure_name, const unsigned char* p, int count, int step,
+IplImage * plot(const string figure_name, const unsigned char* p, int count, int step,
 		  int R, int G, int B);
 
 template
-void plot(const string figure_name, const int* p, int count, int step,
+IplImage * plot(const string figure_name, const int* p, int count, int step,
 		  int R, int G, int B);
 
 template
-void plot(const string figure_name, const short* p, int count, int step,
+IplImage * plot(const string figure_name, const short* p, int count, int step,
 		  int R, int G, int B);
 
+template
+IplImage * plot(const string figure_name, const float* p, int count, int step,
+		  int R, int G, int B);
+
+template
+IplImage * plot(const string figure_name, const double* p, int count, int step,
+		  int R, int G, int B);
 };

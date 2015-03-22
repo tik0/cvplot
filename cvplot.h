@@ -1,17 +1,22 @@
 // Matlab style plot functions for OpenCV by Changbo (zoccob@gmail).
+// Redistributed and extendend by Timo Korthals (tkorthals@cit-ec.uni-bielefeld.de)
 // plot and label:
 //
 // template<typename T>
-// void plot(const string figure_name, const T* p, int count, int step = 1,
-//		     int R = -1, int G = -1, int B = -1);
+// IplImage * plot = CvPlot::plot(const string figure_name, const T* p, int count, int step = 1,
+//		     int R = -1, int G = -1, int B = -1)
+// // User code
+// vPlot::clear(figure_name);
+// cvReleaseImage(&plot);
 //
 // figure_name: required. multiple calls of this function with same figure_name
 //              plots multiple curves on a single graph.
 // p          : required. pointer to data.
 // count      : required. number of data.
 // step       : optional. step between data of two points, default 1.
-// R, G,B     : optional. assign a color to the curve.
+// R, G, B    : optional. assign a color to the curve.
 //              if not assigned, the curve will be assigned a unique color automatically.
+// plot       : holding the plot as an IplImage
 //
 // void label(string lbl):
 //
@@ -107,7 +112,7 @@ namespace CvPlot
 		void DrawLabels(IplImage *output, int posx, int posy);
 
 		// show plot window
-		void Show();
+		IplImage * Show();
 
 	private:
 		Figure();
@@ -134,7 +139,7 @@ namespace CvPlot
 		bool HasFigure(string wnd);
 		Figure* FindFigure(string wnd);
 
-		void Plot(const string figure_name, const float* p, int count, int step,
+		IplImage * Plot(const string figure_name, const float* p, int count, int step,
 				  int R, int G, int B);
 
 		void Label(string lbl);
@@ -144,7 +149,7 @@ namespace CvPlot
 	// handle different data types; static mathods;
 
 	template<typename T>
-	void plot(const string figure_name, const T* p, int count, int step = 1,
+	IplImage * plot(const string figure_name, const T* p, int count, int step = 1,
 			  int R = -1, int G = -1, int B = -1);
 	void clear(const string figure_name);
 
