@@ -28,6 +28,9 @@
 
 #pragma once
 
+#ifndef CVPLOT_H
+#define CVPLOT_H
+
 #if WIN32 
 #define snprintf sprintf_s 
 #endif 
